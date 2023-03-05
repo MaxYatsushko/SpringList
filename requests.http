@@ -1,0 +1,41 @@
+GET http://localhost:8080/employee
+###
+GET http://localhost:8080/employee/addEmployee?firstName=Иван&lastName=Иванов
+###
+GET http://localhost:8080/employee/addEmployee?firstName=Коля&lastName=Петров
+###
+GET http://localhost:8080/employee/addEmployee?firstName=Женя&lastName=Котляров
+###
+GET http://localhost:8080/employee/showEmployees
+###
+GET http://localhost:8080/employee/findEmployee?firstName=Женя&lastName=Котляров
+###
+GET http://localhost:8080/employee/removeEmployee?firstName=Женя&lastName=Котляров
+###
+GET http://localhost:8080/employee/showEmployees
+###
+GET http://localhost:8080/employee/removeEmployee?firstName=Иван&lastName=Иванов
+###
+GET http://localhost:8080/employee/removeEmployee?firstName=Коля&lastName=Петров
+###
+GET http://localhost:8080/employee/removeEmployee?firstName=Женя&lastName=Котляров2
+###
+GET http://localhost:8080/employee/addEmployeeList?firstName=Иван&lastName=Иванов
+###
+GET http://localhost:8080/employee/addEmployeeList?firstName=Коля&lastName=Петров
+###
+GET http://localhost:8080/employee/addEmployeeList?firstName=Женя&lastName=Котляров
+###
+GET http://localhost:8080/employee/showEmployeesList
+###
+GET http://localhost:8080/employee/findEmployeeList?firstName=Женя&lastName=Котляров
+###
+GET http://localhost:8080/employee/removeEmployeeList?firstName=Женя&lastName=Котляров
+###
+GET http://localhost:8080/employee/showEmployeesList
+###
+GET http://localhost:8080/employee/removeEmployeeList?firstName=Иван&lastName=Иванов
+###
+GET http://localhost:8080/employee/removeEmployeeList?firstName=Коля&lastName=Петров
+###
+GET http://localhost:8080/employee/removeEmployeeList?firstName=Женя&lastName=Котляров2
