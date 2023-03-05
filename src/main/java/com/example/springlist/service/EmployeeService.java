@@ -64,6 +64,7 @@ public class EmployeeService {
                     return i;
         return flagEmptyIndex;
     }
+
     public int findEmployeeIndex(Employee employee){
         for (int i = 0; i < employees.length; i++)
             if(employees[i] != null && employees[i].equals(employee))
@@ -125,6 +126,7 @@ public class EmployeeService {
         for (int i = 0; i < employeesList.size(); i++)
             if(employeesList.get(i) != null && employeesList.get(i).getFirstName().equals(firstName) && employeesList.get(i).getLastName().equals(lastname))
                 return i;
+
         return flagEmptyIndex;
     }
 
