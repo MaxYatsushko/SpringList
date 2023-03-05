@@ -5,10 +5,8 @@ import com.example.springlist.exceptions.EmployeeAlreadyAddedException;
 import com.example.springlist.exceptions.EmployeeNotFoundException;
 import com.example.springlist.exceptions.EmployeeStorageIsFullException;
 import com.example.springlist.service.EmployeeService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -22,103 +20,59 @@ public class EmployeeController {
         this.employeeService = employeeService;
     }
 
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(EmployeeStorageIsFullException.class)
+    public String handleException(EmployeeStorageIsFullException e) {
+        return String.format("%s %s", HttpStatus.BAD_REQUEST.value(), e.getMessage());
+    }
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(EmployeeAlreadyAddedException.class)
+    public String handleException(EmployeeAlreadyAddedException e) {
+        return String.format("%s %s", HttpStatus.BAD_REQUEST.value(), e.getMessage());
+    }
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(EmployeeNotFoundException.class)
+    public String handleException(EmployeeNotFoundException e) {
+        return String.format("%s %s", HttpStatus.NOT_FOUND.value(), e.getMessage());
+    }
     @GetMapping
     public String Hello() {
-
-        return "Впрограмме вы можете удалить, добавить, найти сотрудника";
+        return "В программе вы можете удалить, добавить, найти сотрудника";
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //методы для работы с массивами
     @GetMapping("/addEmployee")
-    public String addEmployee(@RequestParam(name = "firstName") String firstName, @RequestParam(name = "lastName") String lastName) {
-
-        boolean result = false;
-        try {
-            result = employeeService.addEmployee(firstName, lastName);
-        } catch (EmployeeAlreadyAddedException | EmployeeStorageIsFullException e) {
-            return e.getMessage();
-        } catch (Exception e){
-            return "У нас обед";
-        }
-
-        return (result ? "Сотрудник добавлен" : "Добавить не удалось");
+    public Employee addEmployee(@RequestParam(name = "firstName") String firstName, @RequestParam(name = "lastName") String lastName) {
+        return employeeService.addEmployee(firstName, lastName);
     }
-
     @GetMapping("/removeEmployee")
-    public String removeEmployee(@RequestParam(name = "firstName") String firstName, @RequestParam(name = "lastName") String lastName) {
-
-        boolean result = false;
-        try {
-            result = employeeService.removeEmployee(firstName, lastName);
-        } catch (EmployeeNotFoundException e) {
-            return e.getMessage();
-        } catch (Exception e){
-            return "У нас обед";
-        }
-
-        return (result ? "Сотрудник удален" : "Удалить не удалось");
+    public Employee removeEmployee(@RequestParam(name = "firstName") String firstName, @RequestParam(name = "lastName") String lastName) {
+        return employeeService.removeEmployee(firstName, lastName);
     }
-
     @GetMapping("/findEmployee")
-    public String findEmployee(@RequestParam(name = "firstName") String firstName, @RequestParam(name = "lastName") String lastName) {
-
-        String result;
-        try {
-            result = employeeService.getEmployee(firstName, lastName).toString();
-        } catch (Exception e){
-            return "У нас обед";
-        }
-
-        return result;
+    public Employee findEmployee(@RequestParam(name = "firstName") String firstName, @RequestParam(name = "lastName") String lastName) {
+        return employeeService.getEmployee(firstName, lastName);
     }
-
     @GetMapping("/showEmployees")
     public Employee[] showEmployees() {
         return employeeService.getEmployees();
     }
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //методы для работы с листом
     @GetMapping("/addEmployeeList")
-    public String addEmployeeList(@RequestParam(name = "firstName") String firstName, @RequestParam(name = "lastName") String lastName) {
-
-        boolean result = false;
-        try {
-            result = employeeService.addEmployeeList(firstName, lastName);
-        } catch (EmployeeAlreadyAddedException | EmployeeStorageIsFullException e) {
-            return e.getMessage();
-        } catch (Exception e){
-            return "У нас обед";
-        }
-
-        return (result ? "Сотрудник добавлен" : "Добавить не удалось");
+    public Employee addEmployeeList(@RequestParam(name = "firstName") String firstName, @RequestParam(name = "lastName") String lastName) {
+        return employeeService.addEmployeeList(firstName, lastName);
     }
 
     @GetMapping("/removeEmployeeList")
-    public String removeEmployeeList(@RequestParam(name = "firstName") String firstName, @RequestParam(name = "lastName") String lastName) {
-
-        boolean result = false;
-        try {
-            result = employeeService.removeEmployeeList(firstName, lastName);
-        } catch (EmployeeNotFoundException e) {
-            return e.getMessage();
-        } catch (Exception e){
-            return "У нас обед";
-        }
-
-        return (result ? "Сотрудник удален" : "Удалить не удалось");
+    public Employee removeEmployeeList(@RequestParam(name = "firstName") String firstName, @RequestParam(name = "lastName") String lastName) {
+        return employeeService.removeEmployeeList(firstName, lastName);
     }
 
     @GetMapping("/findEmployeeList")
-    public String findEmployeeList(@RequestParam(name = "firstName") String firstName, @RequestParam(name = "lastName") String lastName) {
-
-        String result;
-        try {
-            result = employeeService.getEmployeeList(firstName, lastName).toString();
-        } catch (Exception e){
-            return "У нас обед";
-        }
-
-        return result;
+    public Employee findEmployeeList(@RequestParam(name = "firstName") String firstName, @RequestParam(name = "lastName") String lastName) {
+        return employeeService.getEmployeeList(firstName, lastName);
     }
 
     @GetMapping("/showEmployeesList")

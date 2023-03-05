@@ -14,31 +14,34 @@ import java.util.List;
 
 @Service
 public class EmployeeService {
-    private final Employee[] employees = new Employee[5];
-    private final List<Employee> employeesList = new ArrayList<>(List.of(new Employee("Иван", "Иванов")));
+    private final int MAX_VALUE_ARRAY = 5;
+    private final Employee[] employees = new Employee[MAX_VALUE_ARRAY];
+    private final List<Employee> employeesList = new ArrayList<>();
     private final int flagEmptyIndex = -1;
 
     //методы для массива
-    public boolean addEmployee(String firstName, String lastname){
-        int index = findEmployee(firstName, lastname);
+    public Employee addEmployee(String firstName, String lastname){
+        Employee localEmployee = new Employee(firstName, lastname);
+        int index = findEmployeeIndex(localEmployee);
         if (index != flagEmptyIndex)
             throw new EmployeeAlreadyAddedException("Такой сотрудник уже есть в массиве", 888);
 
-        index = findEmptyIndex(firstName, lastname);
+        index = findEmptyIndex();
         if (index == flagEmptyIndex)
             throw new EmployeeStorageIsFullException("К сожалению, отсутствует место для сотрудника", 999);
 
-        employees[index] = new Employee(firstName, lastname);
+        employees[index] = localEmployee;
         /* добавление объекта в массив с расширением массива
         employees = Arrays.copyOf(employees, employees.length + 1);
         employees[employees.length - 1] = new Employee(firstName, lastname);*/
-
-        return true;
+        return employees[index];
     }
 
-    public boolean removeEmployee(String firstName, String lastname){
+    public Employee removeEmployee(String firstName, String lastname){
 
-        int index = findEmployee(firstName, lastname);
+        Employee localEmployee = new Employee(firstName, lastname);
+
+        int index = findEmployeeIndex(localEmployee);
         if(index == flagEmptyIndex)
             throw new EmployeeNotFoundException("Сотрудник для удаления не найден", 555);
 
@@ -52,17 +55,23 @@ public class EmployeeService {
             }
         }
         employees = Arrays.copyOf(employees, employees.length - 1);*/
-        return true;
+        return employees[index];
     }
 
-    public int findEmployee(String firstName, String lastname){
+    public int findEmployeeIndex(String firstName, String lastname){
         for (int i = 0; i < employees.length; i++)
             if(employees[i] != null && employees[i].getFirstName().equals(firstName) && employees[i].getLastName().equals(lastname))
                     return i;
         return flagEmptyIndex;
     }
+    public int findEmployeeIndex(Employee employee){
+        for (int i = 0; i < employees.length; i++)
+            if(employees[i] != null && employees[i].equals(employee))
+                return i;
+        return flagEmptyIndex;
+    }
 
-    public int findEmptyIndex(String firstName, String lastname){
+    public int findEmptyIndex(){
         for (int i = 0; i < employees.length; i++)
             if(employees[i] == null)
                 return i;
@@ -70,52 +79,59 @@ public class EmployeeService {
         return flagEmptyIndex;
     }
 
-    public String getEmployee(String firstName, String lastname){
-        int index = findEmployee(firstName, lastname);
+    public Employee getEmployee(String firstName, String lastname){
+        Employee localEmployee = new Employee(firstName, lastname);
+        int index = findEmployeeIndex(localEmployee);
 
         if(index == flagEmptyIndex)
-            return "Сотрудник не был найден";
-        return employees[index].toString();
+            return null;
+
+        return employees[index];
     }
 
     public Employee[] getEmployees(){
         return employees;
     }
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //методы для листа
-    public boolean addEmployeeList(String firstName, String lastname){
-        int index = findEmployeeList(firstName, lastname);
-        if (index != flagEmptyIndex)
-            throw new EmployeeAlreadyAddedException("Такой сотрудник уже есть в массиве", 888);
-
-        index = findEmptyIndexList(firstName, lastname);
-        if (index == flagEmptyIndex)
+    public Employee addEmployeeList(String firstName, String lastname){
+        if (employeesList.size() == MAX_VALUE_ARRAY)
             throw new EmployeeStorageIsFullException("К сожалению, отсутствует место для сотрудника", 999);
 
-        employeesList.set(index, new Employee(firstName, lastname));
+        Employee localEmployee = new Employee(firstName, lastname);
+        if (employeesList.contains(localEmployee))
+            throw new EmployeeAlreadyAddedException("Такой сотрудник уже есть в списке", 888);
 
-        return true;
+        int index = findEmptyIndexList();
+        if (index != flagEmptyIndex)
+            employeesList.set(index, localEmployee);
+        else
+            employeesList.add(localEmployee);
+
+        return localEmployee;
     }
 
-    public boolean removeEmployeeList(String firstName, String lastname){
+    public Employee removeEmployeeList(String firstName, String lastname){
 
-        int index = findEmployeeList(firstName, lastname);
-        if(index == flagEmptyIndex)
+        Employee localEmployee = new Employee(firstName, lastname);
+        if (!employeesList.contains(localEmployee))
             throw new EmployeeNotFoundException("Сотрудник для удаления не найден", 555);
 
-        employeesList.set(index, null);
-
-        return true;
+        int index = findIndexEmployee(firstName, lastname);
+        return employeesList.remove(index);
     }
 
-    public int findEmployeeList(String firstName, String lastname){
+    public int findIndexEmployee(String firstName, String lastname){
         for (int i = 0; i < employeesList.size(); i++)
             if(employeesList.get(i) != null && employeesList.get(i).getFirstName().equals(firstName) && employeesList.get(i).getLastName().equals(lastname))
                 return i;
         return flagEmptyIndex;
     }
 
-    public int findEmptyIndexList(String firstName, String lastname){
+    public int findEmptyIndexList(){
+        if (!employeesList.contains(null))
+            return flagEmptyIndex;
+
         for (int i = 0; i < employeesList.size(); i++)
             if(employeesList.get(i) == null)
                 return i;
@@ -123,12 +139,16 @@ public class EmployeeService {
         return flagEmptyIndex;
     }
 
-    public String getEmployeeList(String firstName, String lastname){
-        int index = findEmployeeList(firstName, lastname);
+    public Employee getEmployeeList(String firstName, String lastname){
+        Employee localEmployee = new Employee(firstName, lastname);
+        if (!employeesList.contains(localEmployee))
+            throw new EmployeeNotFoundException("Сотрудник не найден", 555);
 
-        if(index == flagEmptyIndex)
-            return "Сотрудник не был найден";
-        return employeesList.get(index).toString();
+        for (Employee employee : employeesList)
+            if(employee.equals(localEmployee))
+                return localEmployee;
+
+        return null;
     }
 
     public List<Employee> getEmployeesList(){
