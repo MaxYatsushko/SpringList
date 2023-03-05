@@ -146,7 +146,7 @@ public class EmployeeService {
 
         for (Employee employee : employeesList)
             if(employee.equals(localEmployee))
-                return localEmployee;
+                return employee;
 
         return null;
     }
